@@ -98,7 +98,7 @@
 
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3列等宽 */
+            grid-template-columns: repeat(2, 1fr); /* 2列等宽 */
             gap: 20px;
         }
 
@@ -216,9 +216,9 @@
 <body>
     <header>
         <div class="container">
-            <h1>🎯 Ball-Pivoting Algorithm</h1>
-            <p class="subtitle">点云表面重建算法的完整实现</p>
-            <p>基于经典的Ball-Pivoting论文，实现高效的点云到网格转换</p>
+            <h1>🔬 Point Cloud Surface Reconstruction</h1>
+            <p class="subtitle">多种点云表面重建算法的实现与比较</p>
+            <p>实现BPA、GPT、Poisson和RBF等多种算法的点云到网格转换</p>
             <a href="https://github.com/smallyang688/VCL-Final_Project" class="github-btn">
                 📂 查看GitHub仓库
             </a>
@@ -230,37 +230,77 @@
             <section class="section">
                 <h2>📋 项目简介</h2>
                 <p>
-                    这是一个完整的计算机图形学大作业项目，实现了经典的Ball-Pivoting算法用于点云表面重建。
-                    该算法通过模拟"球体滚动"来构建三角网格，能够从离散的点云数据生成连续的光滑表面。
+                    这是一个完整的计算机图形学大作业项目，实现了多种点云表面重建算法的比较研究。
+                    包括经典的Ball-Pivoting算法、GPT算法、Poisson重建算法以及RBF插值算法，
+                    通过不同的技术手段从离散的点云数据生成连续的光滑表面。
                 </p>
                 <p>
                     项目基于C++和OpenGL开发，提供了完整的图形界面和交互功能，
-                    支持多种点云数据集的可视化和处理。
+                    支持多种点云数据集的可视化和处理，并通过实验结果展示不同算法的性能特点。
                 </p>
 
                 <div class="figure-section">
-                    <p class="figure-title">Figure 1: Reconstruction results on different datasets</p>
+                    <p class="figure-title">Figure 1: Surface Reconstruction Results Using Different Algorithms</p>
                     <div class="video-grid">
+                        <!-- 第一排：BPA算法重建结果 -->
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/sphere.mp4" type="video/mp4">
                                 您的浏览器不支持 HTML5 视频。
                             </video>
-                            <p class="video-caption">(a) Sphere</p>
+                            <p class="video-caption">(a) Sphere - BPA Algorithm</p>
                         </div>
-                        
-                        <div class="video-item">
-                            <video autoplay loop muted playsinline>
-                                <source src="assets/block.mp4" type="video/mp4">
-                            </video>
-                            <p class="video-caption">(b) Block</p>
-                        </div>
-                        
+
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/dinosaur.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(c) Dinosaur</p>
+                            <p class="video-caption">(b) Dinosaur - BPA Algorithm</p>
+                        </div>
+
+                        <!-- 第二排：GPT算法重建结果 -->
+                        <div class="video-item">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/block.mp4" type="video/mp4">
+                            </video>
+                            <p class="video-caption">(c) Block - GPT Algorithm</p>
+                        </div>
+
+                        <div class="video-item">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/rocker.mp4" type="video/mp4">
+                            </video>
+                            <p class="video-caption">(d) Rocker - GPT Algorithm</p>
+                        </div>
+
+                        <!-- 第三排：Poisson+marchingcubes算法结果 -->
+                        <div class="video-item">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/fandisk.mp4" type="video/mp4">
+                            </video>
+                            <p class="video-caption">(e) Fan Disk - Poisson + Marching Cubes</p>
+                        </div>
+
+                        <div class="video-item">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/bunny.mp4" type="video/mp4">
+                            </video>
+                            <p class="video-caption">(f) Bunny - Poisson + Marching Cubes</p>
+                        </div>
+
+                        <!-- 第四排：RBF+marchingcubes算法重建结果 -->
+                        <div class="video-item">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/arma.mp4" type="video/mp4">
+                            </video>
+                            <p class="video-caption">(g) Armadillo - RBF + Marching Cubes</p>
+                        </div>
+
+                        <div class="video-item">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/cup.mp4" type="video/mp4">
+                            </video>
+                            <p class="video-caption">(h) Cup - RBF + Marching Cubes</p>
                         </div>
                     </div>
                 </div>
@@ -286,8 +326,8 @@
                 <div class="features">
                     <div class="feature-card">
                         <div class="feature-icon">🔮</div>
-                        <h3>Ball-Pivoting算法</h3>
-                        <p>完整实现经典的Ball-Pivoting表面重建算法，支持自适应球半径调整</p>
+                        <h3>多种重建算法</h3>
+                        <p>实现BPA、GPT、Poisson和RBF等多种表面重建算法，支持算法性能对比分析</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">📊</div>
@@ -345,19 +385,17 @@ xmake run final_project
             <section class="section">
                 <h2>📚 算法原理</h2>
                 <p>
-                    Ball-Pivoting算法的基本思想是：将一个虚拟的球放置在点云中，
-                    当球与至少三个点接触时，形成一个三角面。然后"滚动"这个球，
-                    在边界边上寻找新的接触点，逐步构建完整的网格表面。
-                </p>
-                <p>
-                    该算法的优势在于：
+                    本项目实现了四种主要的点云表面重建算法：
                 </p>
                 <ul style="margin: 20px 0; padding-left: 20px;">
-                    <li>计算效率高，适合大规模点云处理</li>
-                    <li>能够处理有噪声的点云数据</li>
-                    <li>生成的网格质量良好，顶点分布均匀</li>
-                    <li>参数调节简单，主要依赖球半径一个参数</li>
+                    <li><strong>Ball-Pivoting算法：</strong>通过模拟"球体滚动"构建三角网格，计算效率高，适合大规模点云处理</li>
+                    <li><strong>GPT算法：</strong>基于几何处理管线的重建方法，具有良好的鲁棒性</li>
+                    <li><strong>Poisson重建：</strong>将表面重建转化为求解泊松方程，生成高质量的光滑表面</li>
+                    <li><strong>RBF插值：</strong>使用径向基函数进行隐式表面重建，适用于复杂几何形状</li>
                 </ul>
+                <p>
+                    通过实验比较，我们可以分析不同算法在重建质量、计算效率和鲁棒性等方面的性能差异。
+                </p>
             </section>
 
             <section class="section">
