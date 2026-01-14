@@ -352,11 +352,25 @@
             </section>
 
             <section class="section">
+                <h2>Implemented Features</h2>
+                <ul>
+                    <li><strong>Algorithm Selection:</strong> Provide three reconstruction algorithms for selection: Greedy Projection Triangulation, Ball-Pivoting Algorithm, Marching Cubes.</li>
+                    <li><strong>Asset Selection:</strong> In addition to the six models from Lab2, five additional objects including bunny are available for selection.</li>
+                    <li><strong>Dynamic Display:</strong> Enabled by default, real-time display of reconstructed patches; if disabled, display all at once after reconstruction. Control the refresh rate for visualization results every certain number of patches through the Refresh Rate parameter.</li>
+                    <li><strong>Mesh Processing Panel:</strong> Dynamically display the current Mesh's vertex count and triangle count; after reconstruction, additionally display whether the reconstructed Mesh is manifold and watertight.</li>
+                    <li><strong>Mesh Processing Operations:</strong> Support Mesh Smoothing, Mesh Subdivision, Mesh Simplification operations on the reconstructed Mesh. Each operation has adjustable parameters (where Mesh Simplification parameters represent the proportion of points to retain). These operations are only available when the current Mesh is manifold; when the Mesh is non-manifold, a red warning "Warning: Mesh is not manifold!" will be displayed on the right, and the corresponding three Apply buttons will be grayed out and unclickable.</li>
+                    <li><strong>Marching Cubes SDF Source:</strong> In the Marching Cubes dropdown menu, the Algorithm item can select to use Poisson or RBF to construct SDF, then extract explicit mesh by Marching Cubes.</li>
+                    <li><strong>Export Support:</strong> Support exporting the reconstructed Mesh as .obj format.</li>
+                    <li><strong>Import Support:</strong> In Marching Cubes mode, support importing user's .obj or .ply files for surface reconstruction.</li>
+                </ul>
+            </section>
+
+            <section class="section">
                 <h2>Interactive Mesh Viewer</h2>
                 <p>Drag to rotate, scroll to zoom. Toggle between different reconstruction results below.</p>
                 
                 <div id="viewer-container">
-                    <div id="loading-overlay">Select a model to view...</div>
+                    <div id="loading-overlay">Select a model from below to view...</div>
                 </div>
 
                 <div class="model-controls">
