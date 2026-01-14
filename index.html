@@ -486,8 +486,23 @@
             // 移除旧模型
             if (currentMesh) {
                 scene.remove(currentMesh);
-                currentMesh.geometry.dispose();
-                currentMesh.material.dispose();
+
+                // 正确dispose THREE.Object3D的所有几何体和材质
+                currentMesh.traverse(function (child) {
+                    if (child.isMesh) {
+                        if (child.geometry) {
+                            child.geometry.dispose();
+                        }
+                        if (child.material) {
+                            if (Array.isArray(child.material)) {
+                                child.material.forEach(material => material.dispose());
+                            } else {
+                                child.material.dispose();
+                            }
+                        }
+                    }
+                });
+
                 currentMesh = null;
             }
 
