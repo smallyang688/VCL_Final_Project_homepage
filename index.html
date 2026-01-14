@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VCL Final Project - Ball-Pivoting Algorithm</title>
+    <title>VCL Final Project - Surface Reconstruction</title>
     <style>
         * {
             margin: 0;
@@ -15,200 +15,201 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #ffffff; /* 恢复白色背景 */
             min-height: 100vh;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1000px; /* 稍微收窄宽度以符合简约阅读体验 */
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
         }
 
         header {
             text-align: center;
-            color: white;
-            padding: 60px 0;
+            padding-bottom: 60px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 40px;
         }
 
         h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: normal;
+            color: #000;
         }
 
         .subtitle {
-            font-size: 1.3em;
-            opacity: 0.9;
-            margin-bottom: 30px;
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 25px;
         }
 
         .github-btn {
             display: inline-block;
-            background: #333;
-            color: white;
-            padding: 15px 30px;
+            background: #fff;
+            color: #333;
+            padding: 10px 20px;
             text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background 0.3s;
-            margin-top: 20px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: all 0.3s;
         }
 
         .github-btn:hover {
-            background: #555;
+            background: #333;
+            color: #fff;
         }
 
+        /* 移除原有的卡片式容器样式，改为直接展示 */
         .content {
-            background: white;
-            border-radius: 10px;
-            padding: 40px;
-            margin-top: -30px;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
         }
 
         .section {
-            margin-bottom: 40px;
+            margin-bottom: 60px;
         }
 
         h2 {
-            color: #667eea;
-            border-bottom: 3px solid #667eea;
+            color: #000;
+            border-bottom: 1px solid #eee;
             padding-bottom: 10px;
-            margin-bottom: 20px;
-            font-size: 2em;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            font-weight: normal;
         }
 
-        /* --- 新增：视频展示区样式 --- */
+        h3 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        /* --- 视频展示区样式 (简约版) --- */
         .figure-section {
             margin-top: 30px;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
+            /* 移除背景色和边框，保持干净 */
         }
 
         .figure-title {
             text-align: center;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #555;
+            font-style: italic;
+            margin-bottom: 20px;
+            color: #666;
         }
 
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2列等宽 */
-            gap: 20px;
+            grid-template-columns: repeat(2, 1fr); /* 2列 */
+            gap: 30px; /* 增加间距 */
         }
 
         .video-item {
             text-align: center;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            /* 移除卡片阴影 */
         }
 
         .video-item video {
             width: 100%;
-            border-radius: 4px;
-            display: block; /* 消除底部空隙 */
+            display: block;
+            background: #000; /* 视频未加载时显示黑色 */
         }
 
         .video-caption {
             margin-top: 10px;
             font-size: 0.9em;
-            color: #666;
-            font-weight: 600;
+            color: #555;
         }
 
+        /* 技术栈样式简化 */
         .tech-stack {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 10px;
         }
 
         .tech-item {
-            background: #f8f9fa;
-            padding: 10px 20px;
-            border-radius: 25px;
-            border: 2px solid #e9ecef;
-            font-weight: bold;
-            color: #495057;
+            background: #f5f5f5;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #666;
+            border: none;
         }
 
+        /* 功能列表样式简化 */
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
             margin-top: 20px;
         }
 
         .feature-card {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.3s;
+            background: #fff;
+            padding: 0;
+            border: none;
+            /* 移除 hover 效果和图标 */
         }
 
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            font-size: 2em;
-            margin-bottom: 15px;
+        .feature-card h3 {
+            margin-bottom: 10px;
+            color: #000;
         }
 
         .code-block {
-            background: #2d3748;
-            color: #e2e8f0;
+            background: #f5f5f5;
+            color: #333;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 4px;
             font-family: 'Courier New', monospace;
+            font-size: 0.9em;
             margin: 20px 0;
             overflow-x: auto;
+            border: 1px solid #eee;
         }
 
         .author {
             text-align: center;
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 8px;
-            margin-top: 30px;
-        }
-
-        .author h3 {
-            color: #667eea;
-            margin-bottom: 10px;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
         }
 
         .footer {
             text-align: center;
-            color: white;
+            color: #888;
             padding: 20px;
-            margin-top: 40px;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+            color: #444;
         }
 
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-
-            .content {
-                padding: 20px;
-            }
-            
-            /* 手机端视频变为一列 */
             .video-grid {
-                grid-template-columns: 1fr; 
-            }
-
-            .tech-stack {
-                justify-content: center;
+                grid-template-columns: 1fr; /* 手机端单列 */
             }
         }
     </style>
@@ -216,11 +217,12 @@
 <body>
     <header>
         <div class="container">
-            <h1>🔬 Point Cloud Surface Reconstruction</h1>
-            <p class="subtitle">多种点云表面重建算法的实现与比较</p>
-            <p>实现BPA、GPT、Poisson和RBF等多种算法的点云到网格转换</p>
+            <h1>Surface Reconstruction</h1>
+            <p class="subtitle">VCL Final Project Report</p>
+            <p style="color: #666;">Comprehensive implementation of point cloud reconstruction algorithms</p>
+            <br>
             <a href="https://github.com/smallyang688/VCL-Final_Project" class="github-btn">
-                📂 查看GitHub仓库
+                View on GitHub
             </a>
         </div>
     </header>
@@ -228,87 +230,76 @@
     <div class="container">
         <div class="content">
             <section class="section">
-                <h2>📋 项目简介</h2>
+                <h2>Project Overview</h2>
                 <p>
-                    这是一个完整的计算机图形学大作业项目，实现了多种点云表面重建算法的比较研究。
-                    包括经典的Ball-Pivoting算法、GPT算法、Poisson重建算法以及RBF插值算法，
-                    通过不同的技术手段从离散的点云数据生成连续的光滑表面。
-                </p>
-                <p>
-                    项目基于C++和OpenGL开发，提供了完整的图形界面和交互功能，
-                    支持多种点云数据集的可视化和处理，并通过实验结果展示不同算法的性能特点。
+                    This project implements several classic surface reconstruction algorithms in Computer Graphics. 
+                    The goal is to analyze and compare different approaches for generating 3D meshes from point cloud data.
                 </p>
 
                 <div class="figure-section">
-                    <p class="figure-title">Figure 1: Surface Reconstruction Results Using Different Algorithms</p>
+                    <p class="figure-title">Figure 1: Reconstruction results (BPA, GPT, Poisson, RBF)</p>
                     <div class="video-grid">
-                        <!-- 第一排：BPA算法重建结果 -->
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/sphere.mp4" type="video/mp4">
-                                您的浏览器不支持 HTML5 视频。
                             </video>
-                            <p class="video-caption">(a) Sphere - BPA Algorithm</p>
+                            <p class="video-caption">(a) Sphere (Ball-Pivoting)</p>
                         </div>
-
+                        
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/dinosaur.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(b) Dinosaur - BPA Algorithm</p>
+                            <p class="video-caption">(b) Dinosaur (Ball-Pivoting)</p>
                         </div>
 
-                        <!-- 第二排：GPT算法重建结果 -->
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/block.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(c) Block - GPT Algorithm</p>
+                            <p class="video-caption">(c) Block (Greedy Projection)</p>
                         </div>
 
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/rocker.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(d) Rocker - GPT Algorithm</p>
+                            <p class="video-caption">(d) Rocker (Greedy Projection)</p>
                         </div>
 
-                        <!-- 第三排：Poisson+marchingcubes算法结果 -->
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/fandisk.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(e) Fan Disk - Poisson + Marching Cubes</p>
+                            <p class="video-caption">(e) Fandisk (Poisson + MC)</p>
                         </div>
 
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/bunny.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(f) Bunny - Poisson + Marching Cubes</p>
+                            <p class="video-caption">(f) Bunny (Poisson + MC)</p>
                         </div>
 
-                        <!-- 第四排：RBF+marchingcubes算法重建结果 -->
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/arma.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(g) Armadillo - RBF + Marching Cubes</p>
+                            <p class="video-caption">(g) Arma (RBF + MC)</p>
                         </div>
 
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/cup.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(h) Cup - RBF + Marching Cubes</p>
+                            <p class="video-caption">(h) Cup (RBF + MC)</p>
                         </div>
                     </div>
                 </div>
-
             </section>
 
             <section class="section">
-                <h2>🛠️ 技术栈</h2>
+                <h2>Tech Stack</h2>
                 <div class="tech-stack">
                     <span class="tech-item">C++17</span>
                     <span class="tech-item">OpenGL</span>
@@ -316,160 +307,58 @@
                     <span class="tech-item">GLM</span>
                     <span class="tech-item">ImGui</span>
                     <span class="tech-item">CMake/xmake</span>
-                    <span class="tech-item">计算机图形学</span>
-                    <span class="tech-item">几何处理</span>
                 </div>
             </section>
 
             <section class="section">
-                <h2>✨ 核心功能</h2>
+                <h2>Algorithms</h2>
                 <div class="features">
                     <div class="feature-card">
-                        <div class="feature-icon">🔮</div>
-                        <h3>多种重建算法</h3>
-                        <p>实现BPA、GPT、Poisson和RBF等多种表面重建算法，支持算法性能对比分析</p>
+                        <h3>Ball-Pivoting (BPA)</h3>
+                        <p>Simulates a ball rolling over the point cloud to form a triangle mesh. Efficient for evenly distributed data.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">📊</div>
-                        <h3>智能参数估计</h3>
-                        <p>自动分析点云统计信息，智能推荐最优的球半径参数</p>
+                        <h3>Greedy Projection (GPT)</h3>
+                        <p>A fast, local triangulation approach that projects points onto a local plane. Good for preserving sharp features.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🎨</div>
-                        <h3>实时可视化</h3>
-                        <p>基于OpenGL的实时渲染，支持多种视角和交互操作</p>
+                        <h3>Poisson Reconstruction</h3>
+                        <p>Global implicit method solving the Poisson equation. Excellent for creating watertight surfaces from noisy data.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🛡️</div>
-                        <h3>鲁棒性处理</h3>
-                        <p>完善的错误处理和边界情况处理，确保算法稳定运行</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📈</div>
-                        <h3>进度监控</h3>
-                        <p>详细的处理进度日志和性能监控，便于调试和优化</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🎯</div>
-                        <h3>多种数据集</h3>
-                        <p>支持多种标准测试数据集，包括斯坦福兔子、恐龙等经典模型</p>
+                        <h3>RBF Implicit</h3>
+                        <p>Uses Radial Basis Functions to interpolate the surface. Provides smooth results and hole filling capabilities.</p>
                     </div>
                 </div>
             </section>
 
             <section class="section">
-                <h2>🚀 快速开始</h2>
-                <h3>编译运行</h3>
+                <h2>Usage</h2>
                 <div class="code-block">
-# 克隆项目
-git clone https://github.com/smallyang688/VCL-Final_Project.git
-cd VCL-Final_Project
-
-# 使用xmake编译
+# Build
 xmake
 
-# 运行程序
+# Run
 xmake run final_project
                 </div>
 
-                <h3>使用说明</h3>
-                <ul style="margin: 20px 0; padding-left: 20px;">
-                    <li>启动程序后，在界面左侧选择不同的点云数据集</li>
-                    <li>调整"Ball Radius"滑块来控制重建精度</li>
-                    <li>点击"Run Ball-Pivoting"开始表面重建</li>
-                    <li>使用鼠标拖拽旋转视角，滚轮缩放</li>
-                    <li>观察控制台输出的详细处理进度</li>
+                <ul>
+                    <li>Select a dataset from the left panel.</li>
+                    <li>Choose an algorithm (BPA, GPT, RBF, Poisson).</li>
+                    <li>Adjust parameters and click "Reconstruct".</li>
                 </ul>
-            </section>
-
-            <section class="section">
-                <h2>📚 算法原理</h2>
-                <p>
-                    Ball-Pivoting算法的基本思想是：将一个虚拟的球放置在点云中，
-                    当球与至少三个点接触时，形成一个三角面。然后"滚动"这个球，
-                    在边界边上寻找新的接触点，逐步构建完整的网格表面。
-                </p>
-                <p>
-                    该算法的优势在于：
-                </p>
-                <ul style="margin: 20px 0; padding-left: 20px;">
-                    <li>计算效率高，适合大规模点云处理</li>
-                    <li>能够处理有噪声的点云数据</li>
-                    <li>生成的网格质量良好，顶点分布均匀</li>
-                    <li>参数调节简单，主要依赖球半径一个参数</li>
-                </ul>
-            </section>
-
-            <section class="section">
-                <h2>📁 项目结构</h2>
-                <div class="code-block">
-VCL-Final_Project/
-├── src/                    # 源代码目录
-│   ├── VCX/
-│   │   ├── Labs/2-GeometryProcessing/  # 几何处理模块
-│   │   │   ├── tasks.cpp/h             # Ball-Pivoting算法实现
-│   │   │   ├── CaseBallPivoting.cpp/h  # UI界面
-│   │   │   └── App.cpp/h               # 应用入口
-│   │   └── Engine/                     # 图形引擎
-│   └── 3rdparty/                       # 第三方库
-├── assets/                 # 资源文件
-│   ├── models/            # 3D模型文件
-│   ├── scenes/            # 测试场景
-│   └── shaders/           # GLSL着色器
-├── tutorials/             # 教程文档
-├── xmake.lua             # 构建配置
-├── LICENSE               # 开源许可证
-└── README.md             # 项目说明
-                </div>
             </section>
 
             <div class="author">
-                <h3>👨‍🎓 作者信息</h3>
-                <p><strong><a href="https://smallyang688.github.io/" target="_blank" style="color: inherit; text-decoration: none;">杨子涵 (Zihan Yang)</a></strong></p>
-                <p>北京大学计算机科学与技术专业</p>
-                <p>📧 yangzihan@stu.pku.edu.cn</p>
-                <p>🎓 VCL (Visualization and Computer Graphics Lab)</p>
-                <p style="margin-top: 15px; font-style: italic;">
-                    "这是一个充满挑战和乐趣的计算机图形学项目，希望能为大家的学习和研究提供参考和启发。"
-                </p>
+                <h3>Zihan Yang</h3>
+                <p>Peking University</p>
+                <p>yangzihan@stu.pku.edu.cn</p>
             </div>
         </div>
     </div>
 
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 Zihan Yang. Made with ❤️ for Computer Graphics Course Final Project.</p>
-            <p>基于经典的Ball-Pivoting算法论文实现，感谢Bernardi等人开创性的工作。</p>
-        </div>
+        <p>&copy; 2026 Zihan Yang. Computer Graphics Course Final Project.</p>
     </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 为技术栈标签添加悬停效果
-            const techItems = document.querySelectorAll('.tech-item');
-            techItems.forEach(item => {
-                item.addEventListener('mouseover', function() {
-                    this.style.transform = 'scale(1.05)';
-                    this.style.transition = 'transform 0.3s';
-                });
-                item.addEventListener('mouseout', function() {
-                    this.style.transform = 'scale(1)';
-                });
-            });
-
-            // 平滑滚动到锚点
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html>

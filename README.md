@@ -8,4 +8,4 @@
 
 ## 访问主页
 
-GitHub Pages: https://smallyang688.github.io/VCL-Final_Project-Page/
+GitHub Pages: https://smallyang688.github.io/VCL_Final_Project_homepage
