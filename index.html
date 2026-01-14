@@ -80,6 +80,49 @@
             font-size: 2em;
         }
 
+        /* --- 新增：视频展示区样式 --- */
+        .figure-section {
+            margin-top: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .figure-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3列等宽 */
+            gap: 20px;
+        }
+
+        .video-item {
+            text-align: center;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .video-item video {
+            width: 100%;
+            border-radius: 4px;
+            display: block; /* 消除底部空隙 */
+        }
+
+        .video-caption {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 600;
+        }
+
         .tech-stack {
             display: flex;
             flex-wrap: wrap;
@@ -158,6 +201,11 @@
             .content {
                 padding: 20px;
             }
+            
+            /* 手机端视频变为一列 */
+            .video-grid {
+                grid-template-columns: 1fr; 
+            }
 
             .tech-stack {
                 justify-content: center;
@@ -189,6 +237,34 @@
                     项目基于C++和OpenGL开发，提供了完整的图形界面和交互功能，
                     支持多种点云数据集的可视化和处理。
                 </p>
+
+                <div class="figure-section">
+                    <p class="figure-title">Figure 1: Reconstruction results on different datasets</p>
+                    <div class="video-grid">
+                        <div class="video-item">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/sphere.mp4" type="video/mp4">
+                                您的浏览器不支持 HTML5 视频。
+                            </video>
+                            <p class="video-caption">(a) Sphere</p>
+                        </div>
+                        
+                        <div class="video-item">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/block.mp4" type="video/mp4">
+                            </video>
+                            <p class="video-caption">(b) Block</p>
+                        </div>
+                        
+                        <div class="video-item">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/dinosaur.mp4" type="video/mp4">
+                            </video>
+                            <p class="video-caption">(c) Dinosaur</p>
+                        </div>
+                    </div>
+                </div>
+
             </section>
 
             <section class="section">
@@ -328,7 +404,6 @@ VCL-Final_Project/
     </footer>
 
     <script>
-        // 添加一些简单的交互效果
         document.addEventListener('DOMContentLoaded', function() {
             // 为技术栈标签添加悬停效果
             const techItems = document.querySelectorAll('.tech-item');
