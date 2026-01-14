@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VCL Final Project - Surface Reconstruction</title>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -15,12 +25,12 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            background-color: #ffffff; /* 恢复白色背景 */
+            background-color: #ffffff;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 1000px; /* 稍微收窄宽度以符合简约阅读体验 */
+            max-width: 1000px;
             margin: 0 auto;
             padding: 40px 20px;
         }
@@ -62,7 +72,6 @@
             color: #fff;
         }
 
-        /* 移除原有的卡片式容器样式，改为直接展示 */
         .content {
             background: transparent;
             padding: 0;
@@ -93,10 +102,9 @@
             color: #444;
         }
 
-        /* --- 视频展示区样式 (简约版) --- */
+        /* 视频展示区样式 */
         .figure-section {
             margin-top: 30px;
-            /* 移除背景色和边框，保持干净 */
         }
 
         .figure-title {
@@ -108,28 +116,77 @@
 
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2列 */
-            gap: 30px; /* 增加间距 */
-        }
-
-        .video-item {
-            text-align: center;
-            /* 移除卡片阴影 */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
         }
 
         .video-item video {
             width: 100%;
             display: block;
-            background: #000; /* 视频未加载时显示黑色 */
+            background: #f9f9f9;
         }
 
         .video-caption {
             margin-top: 10px;
             font-size: 0.9em;
             color: #555;
+            text-align: center;
         }
 
-        /* 技术栈样式简化 */
+        /* --- 新增：3D 查看器样式 --- */
+        #viewer-container {
+            width: 100%;
+            height: 500px;
+            background-color: #f9f9f9; /* 浅灰背景，突出白色网格 */
+            position: relative;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #loading-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            color: #666;
+            font-style: italic;
+        }
+
+        .model-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .model-btn {
+            padding: 8px 16px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: #555;
+            transition: all 0.2s;
+        }
+
+        .model-btn:hover {
+            border-color: #999;
+            color: #333;
+        }
+
+        .model-btn.active {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        /* 技术栈样式 */
         .tech-stack {
             display: flex;
             flex-wrap: wrap;
@@ -145,19 +202,12 @@
             border: none;
         }
 
-        /* 功能列表样式简化 */
+        /* 功能列表样式 */
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 30px;
             margin-top: 20px;
-        }
-
-        .feature-card {
-            background: #fff;
-            padding: 0;
-            border: none;
-            /* 移除 hover 效果和图标 */
         }
 
         .feature-card h3 {
@@ -209,7 +259,10 @@
 
         @media (max-width: 768px) {
             .video-grid {
-                grid-template-columns: 1fr; /* 手机端单列 */
+                grid-template-columns: 1fr;
+            }
+            #viewer-container {
+                height: 350px;
             }
         }
     </style>
@@ -217,9 +270,8 @@
 <body>
     <header>
         <div class="container">
-            <h1>Surface Reconstruction</h1>
-            <p class="subtitle">VCL Final Project Report</p>
-            <p style="color: #666;">Comprehensive implementation of point cloud reconstruction algorithms</p>
+            <h1>Point Cloud Surface Reconstruction</h1>
+            <p class="subtitle">PKU2025Fall VISUAL COMPUTING AND LEARNING Course Final Project</p>
             <br>
             <a href="https://github.com/smallyang688/VCL-Final_Project" class="github-btn">
                 View on GitHub
@@ -237,64 +289,76 @@
                 </p>
 
                 <div class="figure-section">
-                    <p class="figure-title">Figure 1: Reconstruction results (BPA, GPT, Poisson, RBF)</p>
+                    <p class="figure-title">Figure 1: Reconstruction results (Video Demo)</p>
                     <div class="video-grid">
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/sphere.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(a) Sphere (Ball-Pivoting)</p>
+                            <p class="video-caption">(a) Sphere (BPA)</p>
                         </div>
-                        
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/dinosaur.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(b) Dinosaur (Ball-Pivoting)</p>
+                            <p class="video-caption">(b) Dinosaur (BPA)</p>
                         </div>
 
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/block.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(c) Block (Greedy Projection)</p>
+                            <p class="video-caption">(c) Block (GPT)</p>
                         </div>
-
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/rocker.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(d) Rocker (Greedy Projection)</p>
+                            <p class="video-caption">(d) Rocker (GPT)</p>
                         </div>
 
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/fandisk.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(e) Fandisk (Poisson + MC)</p>
+                            <p class="video-caption">(e) Fandisk (Poisson)</p>
                         </div>
-
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/bunny.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(f) Bunny (Poisson + MC)</p>
+                            <p class="video-caption">(f) Bunny (Poisson)</p>
                         </div>
 
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/arma.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(g) Arma (RBF + MC)</p>
+                            <p class="video-caption">(g) Arma (RBF)</p>
                         </div>
-
                         <div class="video-item">
                             <video autoplay loop muted playsinline>
                                 <source src="assets/cup.mp4" type="video/mp4">
                             </video>
-                            <p class="video-caption">(h) Cup (RBF + MC)</p>
+                            <p class="video-caption">(h) Cup (RBF)</p>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>Interactive Mesh Viewer</h2>
+                <p>Drag to rotate, scroll to zoom. Toggle between different reconstruction results below.</p>
+                
+                <div id="viewer-container">
+                    <div id="loading-overlay">Select a model to view...</div>
+                </div>
+
+                <div class="model-controls">
+                    <button class="model-btn" data-src="assets/models/sphere.obj">Sphere (BPA)</button>
+                    <button class="model-btn" data-src="assets/models/block.obj">Block (GPT)</button>
+                    <button class="model-btn" data-src="assets/models/zebra.obj">Zebra (RBF+MC)</button>
+                    <button class="model-btn" data-src="assets/models/bottle.obj">Small Bottle (Poisson+MC)</button>
                 </div>
             </section>
 
@@ -306,7 +370,7 @@
                     <span class="tech-item">GLFW</span>
                     <span class="tech-item">GLM</span>
                     <span class="tech-item">ImGui</span>
-                    <span class="tech-item">CMake/xmake</span>
+                    <span class="tech-item">Three.js (Web)</span>
                 </div>
             </section>
 
@@ -332,27 +396,9 @@
                 </div>
             </section>
 
-            <section class="section">
-                <h2>Usage</h2>
-                <div class="code-block">
-# Build
-xmake
-
-# Run
-xmake run final_project
-                </div>
-
-                <ul>
-                    <li>Select a dataset from the left panel.</li>
-                    <li>Choose an algorithm (BPA, GPT, RBF, Poisson).</li>
-                    <li>Adjust parameters and click "Reconstruct".</li>
-                </ul>
-            </section>
-
             <div class="author">
-                <h3>Zihan Yang</h3>
-                <p>Peking University</p>
-                <p>yangzihan@stu.pku.edu.cn</p>
+                <h3><a href="https://smallyang688.github.io/" target="_blank">Zihan Yang</a><sup>1</sup></h3>
+                <p>School of Electronics Engineering and Computer Science, Peking University</p>
             </div>
         </div>
     </div>
@@ -360,5 +406,162 @@ xmake run final_project
     <footer class="footer">
         <p>&copy; 2026 Zihan Yang. Computer Graphics Course Final Project.</p>
     </footer>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+
+        let camera, scene, renderer, controls;
+        let currentMesh = null;
+
+        const container = document.getElementById('viewer-container');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const buttons = document.querySelectorAll('.model-btn');
+
+        init();
+        animate();
+
+        // 默认加载第一个模型 (如果文件存在)
+        if (buttons.length > 0) {
+            // activateModel(buttons[0]); // 取消注释此行可自动加载第一个
+        }
+
+        function init() {
+            // 1. Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xffffff); // 纯白背景
+            // 添加一点雾化效果，让深度感更强，但保持白色
+            scene.fog = new THREE.Fog(0xffffff, 2, 10);
+
+            // 2. Camera
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(0, 1.5, 3);
+
+            // 3. Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // 4. Lights
+            const ambientLight = new THREE.AmbientLight(0x404040, 1.5); // 柔和的环境光
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.5); // 主光源
+            dirLight.position.set(2, 5, 5);
+            scene.add(dirLight);
+
+            const backLight = new THREE.DirectionalLight(0xffffff, 0.5); // 轮廓光
+            backLight.position.set(-2, 2, -5);
+            scene.add(backLight);
+
+            // 5. Controls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; // 开启阻尼滑动
+            controls.dampingFactor = 0.05;
+
+            // Resize listener
+            window.addEventListener('resize', onWindowResize);
+
+            // Button listeners
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => activateModel(btn));
+            });
+        }
+
+        function activateModel(btn) {
+            // UI 更新
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const modelPath = btn.getAttribute('data-src');
+            loadModel(modelPath);
+        }
+
+        function loadModel(path) {
+            if (!path) return;
+
+            loadingOverlay.style.display = 'flex';
+            loadingOverlay.textContent = 'Loading mesh...';
+
+            // 移除旧模型
+            if (currentMesh) {
+                scene.remove(currentMesh);
+                currentMesh.geometry.dispose();
+                currentMesh.material.dispose();
+                currentMesh = null;
+            }
+
+            const loader = new OBJLoader();
+            loader.load(
+                path,
+                function (object) {
+                    currentMesh = object;
+                    
+                    // 设置统一材质：灰色，略带高光，方便观察几何结构
+                    const material = new THREE.MeshPhongMaterial({ 
+                        color: 0x888888, 
+                        specular: 0x111111,
+                        shininess: 30,
+                        flatShading: false,
+                        side: THREE.DoubleSide // 双面渲染，防止出现孔洞看起来是透明的
+                    });
+
+                    object.traverse(function (child) {
+                        if (child.isMesh) {
+                            child.material = material;
+                        }
+                    });
+
+                    // 关键步骤：自动缩放和居中
+                    const box = new THREE.Box3().setFromObject(object);
+                    const size = box.getSize(new THREE.Vector3());
+                    const center = box.getCenter(new THREE.Vector3());
+
+                    // 将模型中心移动到原点
+                    object.position.x = -center.x;
+                    object.position.y = -center.y;
+                    object.position.z = -center.z;
+
+                    // 计算缩放比例，使模型最大边长为 2 (适应相机视角)
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const scale = 2.0 / maxDim;
+                    object.scale.set(scale, scale, scale);
+
+                    // 创建一个父对象来持有旋转和缩放，方便管理
+                    const pivot = new THREE.Group();
+                    pivot.add(object);
+                    currentMesh = pivot;
+                    scene.add(pivot);
+
+                    loadingOverlay.style.display = 'none';
+                },
+                function (xhr) {
+                    // 进度回调
+                    if (xhr.lengthComputable) {
+                        const percentComplete = Math.round((xhr.loaded / xhr.total) * 100);
+                        loadingOverlay.textContent = `Loading: ${percentComplete}%`;
+                    }
+                },
+                function (error) {
+                    console.error('An error happened', error);
+                    loadingOverlay.textContent = 'Error loading model (Check console)';
+                }
+            );
+        }
+
+        function onWindowResize() {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+    </script>
 </body>
 </html>
