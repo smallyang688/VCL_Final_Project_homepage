@@ -1,6 +1,6 @@
 # Ball-Pivoting Algorithm Project Homepage
 
-这是 VCL Final Project 的项目主页。
+这是 VCL Final Project 的项目主页
 
 ## 项目仓库
 
